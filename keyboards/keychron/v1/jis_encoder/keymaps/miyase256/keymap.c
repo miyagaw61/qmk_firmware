@@ -272,6 +272,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_EQL: // ^, ~ (=, +)
             oneshot_to_enabled(record);
             return tap_with_sft_or_plus_sft(KC_SCLN, KC_MINS, record);
+        case KC_E:
+            if (!record->event.pressed) {
+                break;
+            }
+            if (win_fn_1_oneshot) {
+                win_fn_1_oneshot = false;
+                win_fn_1_enabled = true;
+            }
+            if (win_fn_2_oneshot) {
+                win_fn_2_oneshot = false;
+                win_fn_2_enabled = true;
+                tap_code(KC_END);
+                return false;
+            }
         case KC_I:
             if (!record->event.pressed) {
                 break;
@@ -336,10 +350,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (!record->event.pressed) {
                 break;
             }
-            if (win_fn_2_oneshot) {
-                win_fn_2_oneshot = false;
-                win_fn_2_enabled = true;
-            }
             if (win_fn_1_oneshot) {
                 win_fn_1_oneshot = false;
                 win_fn_1_enabled = true;
@@ -356,6 +366,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     tap_code(KC_A);
                 }
                 tap_code(KC_INT4);
+                return false;
+            }
+            if (win_fn_2_oneshot) {
+                win_fn_2_oneshot = false;
+                win_fn_2_enabled = true;
+                tap_code(KC_HOME);
                 return false;
             }
             break;
