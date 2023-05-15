@@ -288,7 +288,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 win_fn_1_oneshot = false;
                 win_fn_1_enabled = true;
             }
-            if (win_fn_2_oneshot) {
+            if (win_fn_2_oneshot | win_fn_2_enabled) {
                 win_fn_2_oneshot = false;
                 win_fn_2_enabled = true;
                 tap_code(KC_END);
@@ -376,7 +376,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 tap_code(KC_INT4);
                 return false;
             }
-            if (win_fn_2_oneshot) {
+            if (win_fn_2_oneshot | win_fn_2_enabled) {
                 win_fn_2_oneshot = false;
                 win_fn_2_enabled = true;
                 tap_code(KC_HOME);
