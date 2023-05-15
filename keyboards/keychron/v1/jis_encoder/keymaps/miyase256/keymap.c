@@ -35,6 +35,9 @@ enum custom_keycodes {
 #define KC_TASK LGUI(KC_TAB)
 #define KC_FLXP LGUI(KC_E)
 
+#define REPEAT_TH 50
+#define REPEAT_START_TH 300
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [MAC_BASE] = LAYOUT_jis_86(
          KC_ESC,             KC_BRID,  KC_BRIU,  KC_NO,    KC_NO,    RGB_VAD,  RGB_VAI,  KC_MPRV,  KC_MPLY,  KC_MNXT,  KC_MUTE,    KC_VOLD,  KC_VOLU,  KC_DEL,   KC_MUTE,
@@ -240,6 +243,11 @@ void oneshot_to_enabled(keyrecord_t *record) {
     }
 }
 
+static bool win_fn_2_f_repeat = false;
+static int win_fn_2_f_delay = 0;
+static bool win_fn_2_b_repeat = false;
+static int win_fn_2_b_delay = 0;
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case KC_LSFT:
@@ -375,6 +383,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 return false;
             }
             break;
+        case KC_F:
+            if (record->event.pressed) {
+                if (win_fn_1_oneshot) {
+                    win_fn_1_oneshot = false;
+                    win_fn_1_enabled = true;
+                }
+                if (win_fn_2_oneshot | win_fn_2_enabled) {
+                    win_fn_2_oneshot = false;
+                    win_fn_2_enabled = true;
+                    win_fn_2_f_repeat = true;
+                    return false;
+                }
+            } else {
+                if (win_fn_2_f_repeat) {
+                    win_fn_2_f_repeat = false;
+                    win_fn_2_f_delay = 0;
+                    return false;
+                }
+            }
+            break;
         case KC_J:
             if (!record->event.pressed) {
                 break;
@@ -412,6 +440,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 return false;
             }
             return tap_with_sft_or_plus_sft(KC_2, KC_7, record);
+        case KC_B:
+            if (record->event.pressed) {
+                if (win_fn_1_oneshot) {
+                    win_fn_1_oneshot = false;
+                    win_fn_1_enabled = true;
+                }
+                if (win_fn_2_oneshot | win_fn_2_enabled) {
+                    win_fn_2_oneshot = false;
+                    win_fn_2_enabled = true;
+                    win_fn_2_b_repeat = true;
+                    return false;
+                }
+            } else {
+                if (win_fn_2_b_repeat) {
+                    win_fn_2_b_repeat = false;
+                    win_fn_2_b_delay = 0;
+                    return false;
+                }
+            }
+            break;
         case KC_SLSH: // /, ?, ~
             if (!record->event.pressed) {
                 break;
@@ -463,4 +511,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             break;
     }
     return true;
+}
+
+void matrix_scan_user(void) {
+    if (win_fn_2_f_repeat) {
+        if (win_fn_2_f_delay == 0 || win_fn_2_f_delay > (REPEAT_TH + REPEAT_START_TH)) {
+            tap_code(KC_RGHT);
+            if (win_fn_2_f_delay != 0) {
+                win_fn_2_f_delay = REPEAT_START_TH;
+            }
+        }
+        win_fn_2_f_delay++;
+    }
+
+    if (win_fn_2_b_repeat) {
+        if (win_fn_2_b_delay == 0 || win_fn_2_b_delay > (REPEAT_TH + REPEAT_START_TH)) {
+            tap_code(KC_LEFT);
+            if (win_fn_2_b_delay != 0) {
+                win_fn_2_b_delay = REPEAT_START_TH;
+            }
+        }
+        win_fn_2_b_delay++;
+    }
 }
