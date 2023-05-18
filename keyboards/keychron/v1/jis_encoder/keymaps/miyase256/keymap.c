@@ -107,6 +107,62 @@ void unregister_rsft(void) {
     unregister_mods(MOD_BIT(KC_RSFT));
 }
 
+uint32_t is_lctl(void) {
+    return (get_mods() & MOD_BIT(KC_LCTL));
+}
+
+uint32_t is_rctl(void) {
+    return (get_mods() & MOD_BIT(KC_RCTL));
+}
+
+uint32_t is_ctl(void) {
+    return get_mods() & (MOD_BIT(KC_LCTL) | MOD_BIT(KC_RCTL));
+}
+
+void register_lctl(void) {
+    register_mods(MOD_BIT(KC_LCTL));
+}
+
+void register_rctl(void) {
+    register_mods(MOD_BIT(KC_RCTL));
+}
+
+void unregister_lctl(void) {
+    unregister_mods(MOD_BIT(KC_LCTL));
+}
+
+void unregister_rctl(void) {
+    unregister_mods(MOD_BIT(KC_RCTL));
+}
+
+uint32_t is_lwin(void) {
+    return (get_mods() & MOD_BIT(KC_LGUI));
+}
+
+uint32_t is_rwin(void) {
+    return (get_mods() & MOD_BIT(KC_RGUI));
+}
+
+uint32_t is_win(void) {
+    return get_mods() & (MOD_BIT(KC_LGUI) | MOD_BIT(KC_RGUI));
+}
+
+void register_lwin(void) {
+    register_mods(MOD_BIT(KC_LGUI));
+}
+
+void register_rwin(void) {
+    register_mods(MOD_BIT(KC_RGUI));
+}
+
+void unregister_lwin(void) {
+    unregister_mods(MOD_BIT(KC_LGUI));
+}
+
+void unregister_rwin(void) {
+    unregister_mods(MOD_BIT(KC_RGUI));
+}
+
 bool tap_with_sft(uint16_t keycode) {
     if (is_sft()) {
         tap_code(keycode);
@@ -210,6 +266,12 @@ case keycode1: \
     if (is_sft()) { \
         break; \
     } \
+    if (is_ctl()) { \
+        break; \
+    } \
+    if (is_win()) { \
+        break; \
+    } \
     if (mod2_oneshot) { \
         mod2_oneshot = false; \
         mod2_enabled = true; \
@@ -218,20 +280,48 @@ case keycode1: \
         mod1_oneshot = false; \
         mod1_enabled = true; \
         uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
+        keycode2_new = (keycode2 & ~QK_LCTL); \
+        keycode2_new = (keycode2 & ~QK_LGUI); \
         if (keycode2 & QK_LSFT) { \
             register_lsft(); \
-            tap_code(keycode2_new); \
+        } \
+        if (keycode2 & QK_LCTL) { \
+            register_lctl(); \
+        } \
+        if (keycode2 & QK_LGUI) { \
+            register_lwin(); \
+        } \
+        tap_code(keycode2_new); \
+        if (keycode2 & QK_LSFT) { \
             unregister_lsft(); \
-        } else { \
-            tap_code(keycode2_new); \
+        } \
+        if (keycode2 & QK_LCTL) { \
+            unregister_lctl(); \
+        } \
+        if (keycode2 & QK_LGUI) { \
+            unregister_lwin(); \
         } \
         uint16_t keycode3_new = (keycode3 & ~QK_LSFT); \
+        keycode3_new = (keycode3 & ~QK_LCTL); \
+        keycode3_new = (keycode3 & ~QK_LGUI); \
         if (keycode3 & QK_LSFT) { \
             register_lsft(); \
-            tap_code(keycode3_new); \
+        } \
+        if (keycode3 & QK_LCTL) { \
+            register_lctl(); \
+        } \
+        if (keycode3 & QK_LGUI) { \
+            register_lwin(); \
+        } \
+        tap_code(keycode3_new); \
+        if (keycode3 & QK_LSFT) { \
             unregister_lsft(); \
-        } else { \
-            tap_code(keycode3_new); \
+        } \
+        if (keycode3 & QK_LCTL) { \
+            unregister_lctl(); \
+        } \
+        if (keycode3 & QK_LGUI) { \
+            unregister_lwin(); \
         } \
         return false; \
     } \
@@ -325,12 +415,13 @@ bool process_custom_sft_keys(uint16_t keycode, keyrecord_t *record) {
 
 bool process_mod1_keys(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        PROC_MOD1(LSFT(KC_7), LSFT(KC_LBRC)); // MOD1+'  ->  `
-        PROC_MOD1(KC_SLSH,    LSFT(KC_EQL));  // MOD1+/  ->  ~
-        PROC_MOD1_2(KC_I, KC_I, KC_INT4);     // MOD1+I  ->  I, MOD2-ONESHOT
-        PROC_MOD1_2(KC_O, KC_O, KC_INT4);     // MOD1+O  ->  O, MOD2-ONESHOT
-        PROC_MOD1_2(KC_A, KC_A, KC_INT4);     // MOD1+A  ->  A, MOD2-ONESHOT
-        PROC_MOD1_2(KC_J, KC_INT5, KC_ESC);   // MOD1+J  ->  MOD1-ONESHOT, ESC
+        PROC_MOD1(LSFT(KC_7), LSFT(KC_LBRC));  // MOD1+'  ->  `
+        PROC_MOD1(KC_SLSH,    LSFT(KC_EQL));   // MOD1+/  ->  ~
+        PROC_MOD1_2(KC_I,    KC_I, KC_INT4);   // MOD1+I  ->  I, MOD2-ONESHOT
+        PROC_MOD1_2(KC_O,    KC_O, KC_INT4);   // MOD1+O  ->  O, MOD2-ONESHOT
+        PROC_MOD1_2(KC_A,    KC_A, KC_INT4);   // MOD1+A  ->  A, MOD2-ONESHOT
+        PROC_MOD1_2(KC_J,    KC_INT5, KC_ESC); // MOD1+J  ->  MOD1-ONESHOT, ESC
+        PROC_MOD1_2(KC_DOWN, LSFT(LCTL(KC_PAUS)), LWIN(KC_DOWN)); // MOD1+DOWN  ->  SFT+CTL+PAUSE, WIN+DOWN
     }
     return true;
 }
