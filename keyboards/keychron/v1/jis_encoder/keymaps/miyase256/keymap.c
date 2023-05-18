@@ -247,12 +247,26 @@ case keycode1: \
         mod1_oneshot = false; \
         mod1_enabled = true; \
         uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
+        keycode2_new = (keycode2 & ~QK_LCTL); \
+        keycode2_new = (keycode2 & ~QK_LGUI); \
         if (keycode2 & QK_LSFT) { \
             register_lsft(); \
-            tap_code(keycode2_new); \
+        } \
+        if (keycode2 & QK_LCTL) { \
+            register_lctl(); \
+        } \
+        if (keycode2 & QK_LGUI) { \
+            register_lwin(); \
+        } \
+        tap_code(keycode2_new); \
+        if (keycode2 & QK_LSFT) { \
             unregister_lsft(); \
-        } else { \
-            tap_code(keycode2_new); \
+        } \
+        if (keycode2 & QK_LCTL) { \
+            unregister_lctl(); \
+        } \
+        if (keycode2 & QK_LGUI) { \
+            unregister_lwin(); \
         } \
         return false; \
     } \
@@ -343,12 +357,26 @@ case keycode1: \
         mod2_oneshot = false; \
         mod2_enabled = true; \
         uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
+        keycode2_new = (keycode2 & ~QK_LCTL); \
+        keycode2_new = (keycode2 & ~QK_LGUI); \
         if (keycode2 & QK_LSFT) { \
             register_lsft(); \
-            tap_code(keycode2_new); \
+        } \
+        if (keycode2 & QK_LCTL) { \
+            register_lctl(); \
+        } \
+        if (keycode2 & QK_LGUI) { \
+            register_lwin(); \
+        } \
+        tap_code(keycode2_new); \
+        if (keycode2 & QK_LSFT) { \
             unregister_lsft(); \
-        } else { \
-            tap_code(keycode2_new); \
+        } \
+        if (keycode2 & QK_LCTL) { \
+            unregister_lctl(); \
+        } \
+        if (keycode2 & QK_LGUI) { \
+            unregister_lwin(); \
         } \
         return false; \
     } \
@@ -422,7 +450,7 @@ case keycode1: \
         return false; \
     } \
     break;
-
+        
 #define PROC_MOD1_SFT_2(keycode1, keycode2, keycode3) \
 case keycode1: \
     if (!record->event.pressed) { \
@@ -443,21 +471,48 @@ case keycode1: \
             break; \
         } \
         uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
+        keycode2_new = (keycode2 & ~QK_LCTL); \
+        keycode2_new = (keycode2 & ~QK_LGUI); \
         if (keycode2 & QK_LSFT) { \
             register_lsft(); \
-            tap_code(keycode2_new); \
+        } \
+        if (keycode2 & QK_LCTL) { \
+            register_lctl(); \
+        } \
+        if (keycode2 & QK_LGUI) { \
+            register_lwin(); \
+        } \
+        tap_code(keycode2_new); \
+        if (keycode2 & QK_LSFT) { \
             unregister_lsft(); \
-        } else { \
-            tap_code(keycode2_new); \
+        } \
+        if (keycode2 & QK_LCTL) { \
+            unregister_lctl(); \
+        } \
+        if (keycode2 & QK_LGUI) { \
+            unregister_lwin(); \
         } \
         uint16_t keycode3_new = (keycode3 & ~QK_LSFT); \
+        keycode3_new = (keycode3 & ~QK_LCTL); \
+        keycode3_new = (keycode3 & ~QK_LGUI); \
         if (keycode3 & QK_LSFT) { \
             register_lsft(); \
-            tap_code(KC_S); \
-            tap_code(keycode3_new); \
+        } \
+        if (keycode3 & QK_LCTL) { \
+            register_lctl(); \
+        } \
+        if (keycode3 & QK_LGUI) { \
+            register_lwin(); \
+        } \
+        tap_code(keycode3_new); \
+        if (keycode3 & QK_LSFT) { \
             unregister_lsft(); \
-        } else { \
-            tap_code(keycode3_new); \
+        } \
+        if (keycode3 & QK_LCTL) { \
+            unregister_lctl(); \
+        } \
+        if (keycode3 & QK_LGUI) { \
+            unregister_lwin(); \
         } \
         return false; \
     } \
@@ -486,6 +541,7 @@ bool process_mod1_keys(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         PROC_MOD1(LSFT(KC_7), LSFT(KC_LBRC));  // MOD1+'  ->  `
         PROC_MOD1(KC_SLSH,    LSFT(KC_EQL));   // MOD1+/  ->  ~
+        PROC_MOD1(KC_D,       LCTL(KC_F1));    // MOD1+D  ->  CTL+F1
         PROC_MOD1_2(KC_I,    KC_I, KC_INT4);   // MOD1+I  ->  I, MOD2-ONESHOT
         PROC_MOD1_2(KC_O,    KC_O, KC_INT4);   // MOD1+O  ->  O, MOD2-ONESHOT
         PROC_MOD1_2(KC_A,    KC_A, KC_INT4);   // MOD1+A  ->  A, MOD2-ONESHOT
@@ -499,16 +555,16 @@ bool process_mod2_keys(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         PROC_MOD2(KC_E, KC_END);  // MOD2+E  ->  END
         PROC_MOD2(KC_A, KC_HOME); // MOD2+E  ->  HOME
-        PROC_MOD2_2(KC_U, LSFT(KC_HOME), LCTL(KC_X)); // MOD2+U  ->  LSFT(HOME), LCTL(X)
+        PROC_MOD2_2(KC_U, LSFT(KC_HOME), LCTL(KC_X)); // MOD2+U  ->  SFT+HOME, CTL+X
     }
     return true;
 }
 
 bool process_mod1_sft_keys(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        PROC_MOD1_SFT_2(KC_I, LSFT(KC_I), KC_INT4); // MOD1+LSFT(I)  ->  LSFT(I), MOD2-ONESHOT
-        PROC_MOD1_SFT_2(KC_O, LSFT(KC_O), KC_INT4); // MOD1+LSFT(O)  ->  LSFT(O), MOD2-ONESHOT
-        PROC_MOD1_SFT_2(KC_A, LSFT(KC_A), KC_INT4); // MOD1+LSFT(A)  ->  LSFT(A), MOD2-ONESHOT
+        PROC_MOD1_SFT_2(KC_I, LSFT(KC_I), KC_INT4); // MOD1+SFT+I  ->  SFT+I, MOD2-ONESHOT
+        PROC_MOD1_SFT_2(KC_O, LSFT(KC_O), KC_INT4); // MOD1+SFT+O  ->  SFT+O, MOD2-ONESHOT
+        PROC_MOD1_SFT_2(KC_A, LSFT(KC_A), KC_INT4); // MOD1+SFT+A  ->  SFT+A, MOD2-ONESHOT
     }
     return true;
 }
