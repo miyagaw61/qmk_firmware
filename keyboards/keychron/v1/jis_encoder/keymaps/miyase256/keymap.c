@@ -354,6 +354,75 @@ case keycode1: \
     } \
     break;
 
+#define PROC_MOD2_2(keycode1, keycode2, keycode3) \
+case keycode1: \
+    if (!record->event.pressed) { \
+        break; \
+    } \
+    if (is_sft()) { \
+        break; \
+    } \
+    if (is_ctl()) { \
+        break; \
+    } \
+    if (is_win()) { \
+        break; \
+    } \
+    if (mod1_oneshot) { \
+        mod1_oneshot = false; \
+        mod1_enabled = true; \
+    } \
+    if (mod2_oneshot | mod2_enabled) { \
+        mod2_oneshot = false; \
+        mod2_enabled = true; \
+        uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
+        keycode2_new = (keycode2 & ~QK_LCTL); \
+        keycode2_new = (keycode2 & ~QK_LGUI); \
+        if (keycode2 & QK_LSFT) { \
+            register_lsft(); \
+        } \
+        if (keycode2 & QK_LCTL) { \
+            register_lctl(); \
+        } \
+        if (keycode2 & QK_LGUI) { \
+            register_lwin(); \
+        } \
+        tap_code(keycode2_new); \
+        if (keycode2 & QK_LSFT) { \
+            unregister_lsft(); \
+        } \
+        if (keycode2 & QK_LCTL) { \
+            unregister_lctl(); \
+        } \
+        if (keycode2 & QK_LGUI) { \
+            unregister_lwin(); \
+        } \
+        uint16_t keycode3_new = (keycode3 & ~QK_LSFT); \
+        keycode3_new = (keycode3 & ~QK_LCTL); \
+        keycode3_new = (keycode3 & ~QK_LGUI); \
+        if (keycode3 & QK_LSFT) { \
+            register_lsft(); \
+        } \
+        if (keycode3 & QK_LCTL) { \
+            register_lctl(); \
+        } \
+        if (keycode3 & QK_LGUI) { \
+            register_lwin(); \
+        } \
+        tap_code(keycode3_new); \
+        if (keycode3 & QK_LSFT) { \
+            unregister_lsft(); \
+        } \
+        if (keycode3 & QK_LCTL) { \
+            unregister_lctl(); \
+        } \
+        if (keycode3 & QK_LGUI) { \
+            unregister_lwin(); \
+        } \
+        return false; \
+    } \
+    break;
+
 #define PROC_MOD1_SFT_2(keycode1, keycode2, keycode3) \
 case keycode1: \
     if (!record->event.pressed) { \
@@ -430,6 +499,7 @@ bool process_mod2_keys(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         PROC_MOD2(KC_E, KC_END);  // MOD2+E  ->  END
         PROC_MOD2(KC_A, KC_HOME); // MOD2+E  ->  HOME
+        PROC_MOD2_2(KC_U, LSFT(KC_HOME), LCTL(KC_X)); // MOD2+U  ->  LSFT(HOME), LCTL(X)
     }
     return true;
 }
