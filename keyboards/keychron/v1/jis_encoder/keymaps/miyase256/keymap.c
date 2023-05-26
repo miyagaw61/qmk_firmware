@@ -33,6 +33,9 @@ enum custom_keycodes {
 #define KC_TASK LGUI(KC_TAB)
 #define KC_FLXP LGUI(KC_E)
 
+#define QK_DELAY 0x2000
+#define DELAY(kc) (QK_DELAY | (kc))
+
 #define REPEAT_TH 50
 #define REPEAT_START_TH 300
 
@@ -215,6 +218,13 @@ bool tap_without_sft(uint16_t keycode) {
     return true;
 }
 
+uint32_t tap_alt_tab_delay(uint32_t trigger_time, void *cb_arg) {
+    register_lalt();
+    tap_code(KC_TAB);
+    unregister_lalt();
+    return 0;
+}
+
 static bool mod1_oneshot = false;
 static bool mod2_oneshot = false;
 static bool mod1_enabled = false;
@@ -356,6 +366,10 @@ case keycode1: \
         } \
         if (keycode2 & QK_LGUI) { \
             unregister_lwin(); \
+        } \
+        if (keycode3 == DELAY(LALT(KC_TAB))) { \
+            defer_exec(150, tap_alt_tab_delay, NULL); \
+            return false; \
         } \
         uint16_t keycode3_new = (keycode3 & ~QK_LSFT); \
         keycode3_new = (keycode3_new & ~QK_LCTL); \
@@ -630,7 +644,8 @@ bool process_mod1_keys(uint16_t keycode, keyrecord_t *record) {
         PROC_MOD1_2(KC_O,    KC_O, KC_INT4);   // MOD1+O  ->  O, MOD2-ONESHOT
         PROC_MOD1_2(KC_A,    KC_A, KC_INT4);   // MOD1+A  ->  A, MOD2-ONESHOT
         PROC_MOD1_2(KC_J,    KC_INT5, KC_ESC); // MOD1+J  ->  MOD1-ONESHOT, ESC
-        PROC_MOD1_2(KC_DOWN, LSFT(LCTL(KC_PAUS)), LWIN(KC_DOWN)); // MOD1+DOWN  ->  SFT+CTL+PAUSE, WIN+DOWN
+        PROC_MOD1_2(KC_DOWN, LCTL(LALT(KC_PAUS)), DELAY(LALT(KC_TAB))); // MOD1+DOWN  ->  CTL+ALT+PAUSE, ALT+TAB
+        PROC_MOD1_2(KC_UP,   LWIN(KC_3),         LWIN(KC_UP));          // MOD1+UP    ->  WIN+3, WIN+UP
     }
     return true;
 }
