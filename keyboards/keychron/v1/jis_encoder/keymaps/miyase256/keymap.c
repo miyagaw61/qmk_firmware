@@ -247,8 +247,8 @@ case keycode1: \
         mod1_oneshot = false; \
         mod1_enabled = true; \
         uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
-        keycode2_new = (keycode2 & ~QK_LCTL); \
-        keycode2_new = (keycode2 & ~QK_LGUI); \
+        keycode2_new = (keycode2_new & ~QK_LCTL); \
+        keycode2_new = (keycode2_new & ~QK_LGUI); \
         if (keycode2 & QK_LSFT) { \
             register_lsft(); \
         } \
@@ -294,8 +294,8 @@ case keycode1: \
         mod1_oneshot = false; \
         mod1_enabled = true; \
         uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
-        keycode2_new = (keycode2 & ~QK_LCTL); \
-        keycode2_new = (keycode2 & ~QK_LGUI); \
+        keycode2_new = (keycode2_new & ~QK_LCTL); \
+        keycode2_new = (keycode2_new & ~QK_LGUI); \
         if (keycode2 & QK_LSFT) { \
             register_lsft(); \
         } \
@@ -316,8 +316,8 @@ case keycode1: \
             unregister_lwin(); \
         } \
         uint16_t keycode3_new = (keycode3 & ~QK_LSFT); \
-        keycode3_new = (keycode3 & ~QK_LCTL); \
-        keycode3_new = (keycode3 & ~QK_LGUI); \
+        keycode3_new = (keycode3_new & ~QK_LCTL); \
+        keycode3_new = (keycode3_new & ~QK_LGUI); \
         if (keycode3 & QK_LSFT) { \
             register_lsft(); \
         } \
@@ -357,8 +357,8 @@ case keycode1: \
         mod2_oneshot = false; \
         mod2_enabled = true; \
         uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
-        keycode2_new = (keycode2 & ~QK_LCTL); \
-        keycode2_new = (keycode2 & ~QK_LGUI); \
+        keycode2_new = (keycode2_new & ~QK_LCTL); \
+        keycode2_new = (keycode2_new & ~QK_LGUI); \
         if (keycode2 & QK_LSFT) { \
             register_lsft(); \
         } \
@@ -404,8 +404,8 @@ case keycode1: \
         mod2_oneshot = false; \
         mod2_enabled = true; \
         uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
-        keycode2_new = (keycode2 & ~QK_LCTL); \
-        keycode2_new = (keycode2 & ~QK_LGUI); \
+        keycode2_new = (keycode2_new & ~QK_LCTL); \
+        keycode2_new = (keycode2_new & ~QK_LGUI); \
         if (keycode2 & QK_LSFT) { \
             register_lsft(); \
         } \
@@ -426,8 +426,8 @@ case keycode1: \
             unregister_lwin(); \
         } \
         uint16_t keycode3_new = (keycode3 & ~QK_LSFT); \
-        keycode3_new = (keycode3 & ~QK_LCTL); \
-        keycode3_new = (keycode3 & ~QK_LGUI); \
+        keycode3_new = (keycode3_new & ~QK_LCTL); \
+        keycode3_new = (keycode3_new & ~QK_LGUI); \
         if (keycode3 & QK_LSFT) { \
             register_lsft(); \
         } \
@@ -450,7 +450,7 @@ case keycode1: \
         return false; \
     } \
     break;
-        
+
 #define PROC_MOD1_SFT_2(keycode1, keycode2, keycode3) \
 case keycode1: \
     if (!record->event.pressed) { \
@@ -471,8 +471,8 @@ case keycode1: \
             break; \
         } \
         uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
-        keycode2_new = (keycode2 & ~QK_LCTL); \
-        keycode2_new = (keycode2 & ~QK_LGUI); \
+        keycode2_new = (keycode2_new & ~QK_LCTL); \
+        keycode2_new = (keycode2_new & ~QK_LGUI); \
         if (keycode2 & QK_LSFT) { \
             register_lsft(); \
         } \
@@ -493,8 +493,8 @@ case keycode1: \
             unregister_lwin(); \
         } \
         uint16_t keycode3_new = (keycode3 & ~QK_LSFT); \
-        keycode3_new = (keycode3 & ~QK_LCTL); \
-        keycode3_new = (keycode3 & ~QK_LGUI); \
+        keycode3_new = (keycode3_new & ~QK_LCTL); \
+        keycode3_new = (keycode3_new & ~QK_LGUI); \
         if (keycode3 & QK_LSFT) { \
             register_lsft(); \
         } \
@@ -517,7 +517,7 @@ case keycode1: \
         return false; \
     } \
     break;
-    
+
 bool process_custom_sft_keys(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         PROC_SFT(KC_2,          KC_LBRC);
