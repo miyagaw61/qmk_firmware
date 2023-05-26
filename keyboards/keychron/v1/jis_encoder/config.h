@@ -29,3 +29,6 @@
 
 /* Enable caps-lock LED */
 #define CAPS_LOCK_LED_INDEX 45
+
+/* Define Polling Rate */
+#define USB_POLLING_INTERVAL_MS 10
