@@ -412,6 +412,54 @@ case keycode1: \
     } \
     break;
 
+#define PROC_MOD1_SFT(keycode1, keycode2) \
+case keycode1: \
+    if (!record->event.pressed) { \
+        break; \
+    } \
+    if (mod2_oneshot) { \
+        mod2_oneshot = false; \
+        mod2_enabled = true; \
+    } \
+    if (mod1_oneshot | mod1_enabled) { \
+        mod1_oneshot = false; \
+        mod1_enabled = true; \
+        if (is_lsft()) { \
+            unregister_lsft(); \
+        } else if (is_rsft()) { \
+            unregister_rsft(); \
+        } else { \
+            break; \
+        } \
+        send(keycode2); \
+        return false; \
+    } \
+    break;
+
+#define PROC_MOD2_SFT(keycode1, keycode2) \
+case keycode1: \
+    if (!record->event.pressed) { \
+        break; \
+    } \
+    if (mod1_oneshot) { \
+        mod1_oneshot = false; \
+        mod1_enabled = true; \
+    } \
+    if (mod2_oneshot | mod2_enabled) { \
+        mod2_oneshot = false; \
+        mod2_enabled = true; \
+        if (is_lsft()) { \
+            unregister_lsft(); \
+        } else if (is_rsft()) { \
+            unregister_rsft(); \
+        } else { \
+            break; \
+        } \
+        send(keycode2); \
+        return false; \
+    } \
+    break;
+
 #define PROC_MOD1_SFT_2(keycode1, keycode2, keycode3) \
 case keycode1: \
     if (!record->event.pressed) { \
@@ -424,6 +472,36 @@ case keycode1: \
     if (mod1_oneshot | mod1_enabled) { \
         mod1_oneshot = false; \
         mod1_enabled = true; \
+        if (is_lsft()) { \
+            unregister_lsft(); \
+        } else if (is_rsft()) { \
+            unregister_rsft(); \
+        } else { \
+            break; \
+        } \
+        send(keycode2); \
+        if (keycode3 & QK_DELAY) { \
+            delay_keycode = (keycode3 & ~QK_DELAY); \
+            defer_exec(150, send_delay, NULL); \
+            return false; \
+        } \
+        send(keycode3); \
+        return false; \
+    } \
+    break;
+
+#define PROC_MOD2_SFT_2(keycode1, keycode2, keycode3) \
+case keycode1: \
+    if (!record->event.pressed) { \
+        break; \
+    } \
+    if (mod1_oneshot) { \
+        mod1_oneshot = false; \
+        mod1_enabled = true; \
+    } \
+    if (mod2_oneshot | mod2_enabled) { \
+        mod2_oneshot = false; \
+        mod2_enabled = true; \
         if (is_lsft()) { \
             unregister_lsft(); \
         } else if (is_rsft()) { \
@@ -494,6 +572,14 @@ bool process_mod1_sft_keys(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
+bool process_mod2_sft_keys(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        PROC_MOD2_SFT(KC_E, LSFT(KC_END));  // MOD2+E  ->  END
+        PROC_MOD2_SFT(KC_A, LSFT(KC_HOME)); // MOD2+E  ->  HOME
+    }
+    return true;
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     bool result;
     result = process_custom_sft_keys(keycode, record);
@@ -509,6 +595,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return result;
     }
     result = process_mod1_sft_keys(keycode, record);
+    if (!result) {
+        return result;
+    }
+    result = process_mod2_sft_keys(keycode, record);
     if (!result) {
         return result;
     }
