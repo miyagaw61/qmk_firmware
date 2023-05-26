@@ -78,7 +78,7 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
     [MAC_BASE] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU)},
     [MAC_FN]   = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
     [WIN_BASE] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU)},
-    [WIN_FN] = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
+    [WIN_FN]   = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
 };
 #endif // ENCODER_MAP_ENABLE
 
@@ -218,10 +218,49 @@ bool tap_without_sft(uint16_t keycode) {
     return true;
 }
 
+static uint16_t delay_keycode = 0;
+
 uint32_t tap_alt_tab_delay(uint32_t trigger_time, void *cb_arg) {
     register_lalt();
     tap_code(KC_TAB);
     unregister_lalt();
+    return 0;
+}
+
+void send(uint16_t keycode) {
+    uint16_t keycode_without_QK = (keycode & ~QK_LSFT);
+    keycode_without_QK = (keycode_without_QK & ~QK_LCTL);
+    keycode_without_QK = (keycode_without_QK & ~QK_LALT);
+    keycode_without_QK = (keycode_without_QK & ~QK_LGUI);
+    if (keycode & QK_LSFT) {
+        register_lsft();
+    }
+    if (keycode & QK_LCTL) {
+        register_lctl();
+    }
+    if (keycode & QK_LALT) {
+        register_lalt();
+    }
+    if (keycode & QK_LGUI) {
+        register_lwin();
+    }
+    tap_code(keycode_without_QK);
+    if (keycode & QK_LSFT) {
+        unregister_lsft();
+    }
+    if (keycode & QK_LCTL) {
+        unregister_lctl();
+    }
+    if (keycode & QK_LALT) {
+        unregister_lalt();
+    }
+    if (keycode & QK_LGUI) {
+        unregister_lwin();
+    }
+}
+
+uint32_t send_delay(uint32_t trigger_time, void *cb_arg) {
+    send(delay_keycode);
     return 0;
 }
 
@@ -284,35 +323,7 @@ case keycode1: \
     if (mod1_oneshot | mod1_enabled) { \
         mod1_oneshot = false; \
         mod1_enabled = true; \
-        uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
-        keycode2_new = (keycode2_new & ~QK_LCTL); \
-        keycode2_new = (keycode2_new & ~QK_LALT); \
-        keycode2_new = (keycode2_new & ~QK_LGUI); \
-        if (keycode2 & QK_LSFT) { \
-            register_lsft(); \
-        } \
-        if (keycode2 & QK_LCTL) { \
-            register_lctl(); \
-        } \
-        if (keycode2 & QK_LALT) { \
-            register_lalt(); \
-        } \
-        if (keycode2 & QK_LGUI) { \
-            register_lwin(); \
-        } \
-        tap_code(keycode2_new); \
-        if (keycode2 & QK_LSFT) { \
-            unregister_lsft(); \
-        } \
-        if (keycode2 & QK_LCTL) { \
-            unregister_lctl(); \
-        } \
-        if (keycode2 & QK_LALT) { \
-            unregister_lalt(); \
-        } \
-        if (keycode2 & QK_LGUI) { \
-            unregister_lwin(); \
-        } \
+        send(keycode2); \
         return false; \
     } \
     break;
@@ -338,68 +349,13 @@ case keycode1: \
     if (mod1_oneshot | mod1_enabled) { \
         mod1_oneshot = false; \
         mod1_enabled = true; \
-        uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
-        keycode2_new = (keycode2_new & ~QK_LCTL); \
-        keycode2_new = (keycode2_new & ~QK_LALT); \
-        keycode2_new = (keycode2_new & ~QK_LGUI); \
-        if (keycode2 & QK_LSFT) { \
-            register_lsft(); \
-        } \
-        if (keycode2 & QK_LCTL) { \
-            register_lctl(); \
-        } \
-        if (keycode2 & QK_LALT) { \
-            register_lalt(); \
-        } \
-        if (keycode2 & QK_LGUI) { \
-            register_lwin(); \
-        } \
-        tap_code(keycode2_new); \
-        if (keycode2 & QK_LSFT) { \
-            unregister_lsft(); \
-        } \
-        if (keycode2 & QK_LCTL) { \
-            unregister_lctl(); \
-        } \
-        if (keycode2 & QK_LALT) { \
-            unregister_lalt(); \
-        } \
-        if (keycode2 & QK_LGUI) { \
-            unregister_lwin(); \
-        } \
-        if (keycode3 == DELAY(LALT(KC_TAB))) { \
-            defer_exec(150, tap_alt_tab_delay, NULL); \
+        send(keycode2); \
+        if (keycode3 & QK_DELAY) { \
+            delay_keycode = (keycode3 & ~QK_DELAY); \
+            defer_exec(150, send_delay, NULL); \
             return false; \
         } \
-        uint16_t keycode3_new = (keycode3 & ~QK_LSFT); \
-        keycode3_new = (keycode3_new & ~QK_LCTL); \
-        keycode3_new = (keycode3_new & ~QK_LALT); \
-        keycode3_new = (keycode3_new & ~QK_LGUI); \
-        if (keycode3 & QK_LSFT) { \
-            register_lsft(); \
-        } \
-        if (keycode3 & QK_LCTL) { \
-            register_lctl(); \
-        } \
-        if (keycode3 & QK_LALT) { \
-            register_lalt(); \
-        } \
-        if (keycode3 & QK_LGUI) { \
-            register_lwin(); \
-        } \
-        tap_code(keycode3_new); \
-        if (keycode3 & QK_LSFT) { \
-            unregister_lsft(); \
-        } \
-        if (keycode3 & QK_LCTL) { \
-            unregister_lctl(); \
-        } \
-        if (keycode3 & QK_LALT) { \
-            unregister_lalt(); \
-        } \
-        if (keycode3 & QK_LGUI) { \
-            unregister_lwin(); \
-        } \
+        send(keycode3); \
         return false; \
     } \
     break;
@@ -419,35 +375,7 @@ case keycode1: \
     if (mod2_oneshot | mod2_enabled) { \
         mod2_oneshot = false; \
         mod2_enabled = true; \
-        uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
-        keycode2_new = (keycode2_new & ~QK_LCTL); \
-        keycode2_new = (keycode2_new & ~QK_LALT); \
-        keycode2_new = (keycode2_new & ~QK_LGUI); \
-        if (keycode2 & QK_LSFT) { \
-            register_lsft(); \
-        } \
-        if (keycode2 & QK_LCTL) { \
-            register_lctl(); \
-        } \
-        if (keycode2 & QK_LALT) { \
-            register_lalt(); \
-        } \
-        if (keycode2 & QK_LGUI) { \
-            register_lwin(); \
-        } \
-        tap_code(keycode2_new); \
-        if (keycode2 & QK_LSFT) { \
-            unregister_lsft(); \
-        } \
-        if (keycode2 & QK_LCTL) { \
-            unregister_lctl(); \
-        } \
-        if (keycode2 & QK_LALT) { \
-            unregister_lalt(); \
-        } \
-        if (keycode2 & QK_LGUI) { \
-            unregister_lwin(); \
-        } \
+        send(keycode2); \
         return false; \
     } \
     break;
@@ -473,64 +401,13 @@ case keycode1: \
     if (mod2_oneshot | mod2_enabled) { \
         mod2_oneshot = false; \
         mod2_enabled = true; \
-        uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
-        keycode2_new = (keycode2_new & ~QK_LCTL); \
-        keycode2_new = (keycode2_new & ~QK_LALT); \
-        keycode2_new = (keycode2_new & ~QK_LGUI); \
-        if (keycode2 & QK_LSFT) { \
-            register_lsft(); \
+        send(keycode2); \
+        if (keycode3 & QK_DELAY) { \
+            delay_keycode = (keycode3 & ~QK_DELAY); \
+            defer_exec(150, send_delay, NULL); \
+            return false; \
         } \
-        if (keycode2 & QK_LCTL) { \
-            register_lctl(); \
-        } \
-        if (keycode2 & QK_LALT) { \
-            register_lalt(); \
-        } \
-        if (keycode2 & QK_LGUI) { \
-            register_lwin(); \
-        } \
-        tap_code(keycode2_new); \
-        if (keycode2 & QK_LSFT) { \
-            unregister_lsft(); \
-        } \
-        if (keycode2 & QK_LCTL) { \
-            unregister_lctl(); \
-        } \
-        if (keycode2 & QK_LALT) { \
-            unregister_lalt(); \
-        } \
-        if (keycode2 & QK_LGUI) { \
-            unregister_lwin(); \
-        } \
-        uint16_t keycode3_new = (keycode3 & ~QK_LSFT); \
-        keycode3_new = (keycode3_new & ~QK_LCTL); \
-        keycode3_new = (keycode3_new & ~QK_LALT); \
-        keycode3_new = (keycode3_new & ~QK_LGUI); \
-        if (keycode3 & QK_LSFT) { \
-            register_lsft(); \
-        } \
-        if (keycode3 & QK_LCTL) { \
-            register_lctl(); \
-        } \
-        if (keycode3 & QK_LALT) { \
-            register_lalt(); \
-        } \
-        if (keycode3 & QK_LGUI) { \
-            register_lwin(); \
-        } \
-        tap_code(keycode3_new); \
-        if (keycode3 & QK_LSFT) { \
-            unregister_lsft(); \
-        } \
-        if (keycode3 & QK_LCTL) { \
-            unregister_lctl(); \
-        } \
-        if (keycode3 & QK_LALT) { \
-            unregister_lalt(); \
-        } \
-        if (keycode3 & QK_LGUI) { \
-            unregister_lwin(); \
-        } \
+        send(keycode3); \
         return false; \
     } \
     break;
@@ -554,64 +431,13 @@ case keycode1: \
         } else { \
             break; \
         } \
-        uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
-        keycode2_new = (keycode2_new & ~QK_LCTL); \
-        keycode2_new = (keycode2_new & ~QK_LALT); \
-        keycode2_new = (keycode2_new & ~QK_LGUI); \
-        if (keycode2 & QK_LSFT) { \
-            register_lsft(); \
+        send(keycode2); \
+        if (keycode3 & QK_DELAY) { \
+            delay_keycode = (keycode3 & ~QK_DELAY); \
+            defer_exec(150, send_delay, NULL); \
+            return false; \
         } \
-        if (keycode2 & QK_LCTL) { \
-            register_lctl(); \
-        } \
-        if (keycode2 & QK_LALT) { \
-            register_lalt(); \
-        } \
-        if (keycode2 & QK_LGUI) { \
-            register_lwin(); \
-        } \
-        tap_code(keycode2_new); \
-        if (keycode2 & QK_LSFT) { \
-            unregister_lsft(); \
-        } \
-        if (keycode2 & QK_LCTL) { \
-            unregister_lctl(); \
-        } \
-        if (keycode2 & QK_LALT) { \
-            unregister_lalt(); \
-        } \
-        if (keycode2 & QK_LGUI) { \
-            unregister_lwin(); \
-        } \
-        uint16_t keycode3_new = (keycode3 & ~QK_LSFT); \
-        keycode3_new = (keycode3_new & ~QK_LCTL); \
-        keycode3_new = (keycode3_new & ~QK_LALT); \
-        keycode3_new = (keycode3_new & ~QK_LGUI); \
-        if (keycode3 & QK_LSFT) { \
-            register_lsft(); \
-        } \
-        if (keycode3 & QK_LCTL) { \
-            register_lctl(); \
-        } \
-        if (keycode3 & QK_LALT) { \
-            register_lalt(); \
-        } \
-        if (keycode3 & QK_LGUI) { \
-            register_lwin(); \
-        } \
-        tap_code(keycode3_new); \
-        if (keycode3 & QK_LSFT) { \
-            unregister_lsft(); \
-        } \
-        if (keycode3 & QK_LCTL) { \
-            unregister_lctl(); \
-        } \
-        if (keycode3 & QK_LALT) { \
-            unregister_lalt(); \
-        } \
-        if (keycode3 & QK_LGUI) { \
-            unregister_lwin(); \
-        } \
+        send(keycode3); \
         return false; \
     } \
     break;
