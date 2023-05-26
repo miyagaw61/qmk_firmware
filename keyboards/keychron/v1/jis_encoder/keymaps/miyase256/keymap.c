@@ -135,6 +135,34 @@ void unregister_rctl(void) {
     unregister_mods(MOD_BIT(KC_RCTL));
 }
 
+uint32_t is_lalt(void) {
+    return (get_mods() & MOD_BIT(KC_LALT));
+}
+
+uint32_t is_ralt(void) {
+    return (get_mods() & MOD_BIT(KC_RALT));
+}
+
+uint32_t is_alt(void) {
+    return get_mods() & (MOD_BIT(KC_LALT) | MOD_BIT(KC_RALT));
+}
+
+void register_lalt(void) {
+    register_mods(MOD_BIT(KC_LALT));
+}
+
+void register_ralt(void) {
+    register_mods(MOD_BIT(KC_RALT));
+}
+
+void unregister_lalt(void) {
+    unregister_mods(MOD_BIT(KC_LALT));
+}
+
+void unregister_ralt(void) {
+    unregister_mods(MOD_BIT(KC_RALT));
+}
+
 uint32_t is_lwin(void) {
     return (get_mods() & MOD_BIT(KC_LGUI));
 }
@@ -248,12 +276,16 @@ case keycode1: \
         mod1_enabled = true; \
         uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
         keycode2_new = (keycode2_new & ~QK_LCTL); \
+        keycode2_new = (keycode2_new & ~QK_LALT); \
         keycode2_new = (keycode2_new & ~QK_LGUI); \
         if (keycode2 & QK_LSFT) { \
             register_lsft(); \
         } \
         if (keycode2 & QK_LCTL) { \
             register_lctl(); \
+        } \
+        if (keycode2 & QK_LALT) { \
+            register_lalt(); \
         } \
         if (keycode2 & QK_LGUI) { \
             register_lwin(); \
@@ -264,6 +296,9 @@ case keycode1: \
         } \
         if (keycode2 & QK_LCTL) { \
             unregister_lctl(); \
+        } \
+        if (keycode2 & QK_LALT) { \
+            unregister_lalt(); \
         } \
         if (keycode2 & QK_LGUI) { \
             unregister_lwin(); \
@@ -295,12 +330,16 @@ case keycode1: \
         mod1_enabled = true; \
         uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
         keycode2_new = (keycode2_new & ~QK_LCTL); \
+        keycode2_new = (keycode2_new & ~QK_LALT); \
         keycode2_new = (keycode2_new & ~QK_LGUI); \
         if (keycode2 & QK_LSFT) { \
             register_lsft(); \
         } \
         if (keycode2 & QK_LCTL) { \
             register_lctl(); \
+        } \
+        if (keycode2 & QK_LALT) { \
+            register_lalt(); \
         } \
         if (keycode2 & QK_LGUI) { \
             register_lwin(); \
@@ -312,17 +351,24 @@ case keycode1: \
         if (keycode2 & QK_LCTL) { \
             unregister_lctl(); \
         } \
+        if (keycode2 & QK_LALT) { \
+            unregister_lalt(); \
+        } \
         if (keycode2 & QK_LGUI) { \
             unregister_lwin(); \
         } \
         uint16_t keycode3_new = (keycode3 & ~QK_LSFT); \
         keycode3_new = (keycode3_new & ~QK_LCTL); \
+        keycode3_new = (keycode3_new & ~QK_LALT); \
         keycode3_new = (keycode3_new & ~QK_LGUI); \
         if (keycode3 & QK_LSFT) { \
             register_lsft(); \
         } \
         if (keycode3 & QK_LCTL) { \
             register_lctl(); \
+        } \
+        if (keycode3 & QK_LALT) { \
+            register_lalt(); \
         } \
         if (keycode3 & QK_LGUI) { \
             register_lwin(); \
@@ -333,6 +379,9 @@ case keycode1: \
         } \
         if (keycode3 & QK_LCTL) { \
             unregister_lctl(); \
+        } \
+        if (keycode3 & QK_LALT) { \
+            unregister_lalt(); \
         } \
         if (keycode3 & QK_LGUI) { \
             unregister_lwin(); \
@@ -358,12 +407,16 @@ case keycode1: \
         mod2_enabled = true; \
         uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
         keycode2_new = (keycode2_new & ~QK_LCTL); \
+        keycode2_new = (keycode2_new & ~QK_LALT); \
         keycode2_new = (keycode2_new & ~QK_LGUI); \
         if (keycode2 & QK_LSFT) { \
             register_lsft(); \
         } \
         if (keycode2 & QK_LCTL) { \
             register_lctl(); \
+        } \
+        if (keycode2 & QK_LALT) { \
+            register_lalt(); \
         } \
         if (keycode2 & QK_LGUI) { \
             register_lwin(); \
@@ -374,6 +427,9 @@ case keycode1: \
         } \
         if (keycode2 & QK_LCTL) { \
             unregister_lctl(); \
+        } \
+        if (keycode2 & QK_LALT) { \
+            unregister_lalt(); \
         } \
         if (keycode2 & QK_LGUI) { \
             unregister_lwin(); \
@@ -405,12 +461,16 @@ case keycode1: \
         mod2_enabled = true; \
         uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
         keycode2_new = (keycode2_new & ~QK_LCTL); \
+        keycode2_new = (keycode2_new & ~QK_LALT); \
         keycode2_new = (keycode2_new & ~QK_LGUI); \
         if (keycode2 & QK_LSFT) { \
             register_lsft(); \
         } \
         if (keycode2 & QK_LCTL) { \
             register_lctl(); \
+        } \
+        if (keycode2 & QK_LALT) { \
+            register_lalt(); \
         } \
         if (keycode2 & QK_LGUI) { \
             register_lwin(); \
@@ -422,17 +482,24 @@ case keycode1: \
         if (keycode2 & QK_LCTL) { \
             unregister_lctl(); \
         } \
+        if (keycode2 & QK_LALT) { \
+            unregister_lalt(); \
+        } \
         if (keycode2 & QK_LGUI) { \
             unregister_lwin(); \
         } \
         uint16_t keycode3_new = (keycode3 & ~QK_LSFT); \
         keycode3_new = (keycode3_new & ~QK_LCTL); \
+        keycode3_new = (keycode3_new & ~QK_LALT); \
         keycode3_new = (keycode3_new & ~QK_LGUI); \
         if (keycode3 & QK_LSFT) { \
             register_lsft(); \
         } \
         if (keycode3 & QK_LCTL) { \
             register_lctl(); \
+        } \
+        if (keycode3 & QK_LALT) { \
+            register_lalt(); \
         } \
         if (keycode3 & QK_LGUI) { \
             register_lwin(); \
@@ -443,6 +510,9 @@ case keycode1: \
         } \
         if (keycode3 & QK_LCTL) { \
             unregister_lctl(); \
+        } \
+        if (keycode3 & QK_LALT) { \
+            unregister_lalt(); \
         } \
         if (keycode3 & QK_LGUI) { \
             unregister_lwin(); \
@@ -472,12 +542,16 @@ case keycode1: \
         } \
         uint16_t keycode2_new = (keycode2 & ~QK_LSFT); \
         keycode2_new = (keycode2_new & ~QK_LCTL); \
+        keycode2_new = (keycode2_new & ~QK_LALT); \
         keycode2_new = (keycode2_new & ~QK_LGUI); \
         if (keycode2 & QK_LSFT) { \
             register_lsft(); \
         } \
         if (keycode2 & QK_LCTL) { \
             register_lctl(); \
+        } \
+        if (keycode2 & QK_LALT) { \
+            register_lalt(); \
         } \
         if (keycode2 & QK_LGUI) { \
             register_lwin(); \
@@ -489,17 +563,24 @@ case keycode1: \
         if (keycode2 & QK_LCTL) { \
             unregister_lctl(); \
         } \
+        if (keycode2 & QK_LALT) { \
+            unregister_lalt(); \
+        } \
         if (keycode2 & QK_LGUI) { \
             unregister_lwin(); \
         } \
         uint16_t keycode3_new = (keycode3 & ~QK_LSFT); \
         keycode3_new = (keycode3_new & ~QK_LCTL); \
+        keycode3_new = (keycode3_new & ~QK_LALT); \
         keycode3_new = (keycode3_new & ~QK_LGUI); \
         if (keycode3 & QK_LSFT) { \
             register_lsft(); \
         } \
         if (keycode3 & QK_LCTL) { \
             register_lctl(); \
+        } \
+        if (keycode3 & QK_LALT) { \
+            register_lalt(); \
         } \
         if (keycode3 & QK_LGUI) { \
             register_lwin(); \
@@ -510,6 +591,9 @@ case keycode1: \
         } \
         if (keycode3 & QK_LCTL) { \
             unregister_lctl(); \
+        } \
+        if (keycode3 & QK_LALT) { \
+            unregister_lalt(); \
         } \
         if (keycode3 & QK_LGUI) { \
             unregister_lwin(); \
