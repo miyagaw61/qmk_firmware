@@ -218,15 +218,6 @@ bool tap_without_sft(uint16_t keycode) {
     return true;
 }
 
-static uint16_t delay_keycode = 0;
-
-uint32_t tap_alt_tab_delay(uint32_t trigger_time, void *cb_arg) {
-    register_lalt();
-    tap_code(KC_TAB);
-    unregister_lalt();
-    return 0;
-}
-
 void send(uint16_t keycode) {
     uint16_t keycode_without_QK = (keycode & ~QK_LSFT);
     keycode_without_QK = (keycode_without_QK & ~QK_LCTL);
@@ -258,6 +249,8 @@ void send(uint16_t keycode) {
         unregister_lwin();
     }
 }
+
+static uint16_t delay_keycode = 0;
 
 uint32_t send_delay(uint32_t trigger_time, void *cb_arg) {
     send(delay_keycode);
@@ -352,7 +345,7 @@ case keycode1: \
         send(keycode2); \
         if (keycode3 & QK_DELAY) { \
             delay_keycode = (keycode3 & ~QK_DELAY); \
-            defer_exec(150, send_delay, NULL); \
+            defer_exec(200, send_delay, NULL); \
             return false; \
         } \
         send(keycode3); \
