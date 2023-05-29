@@ -550,8 +550,48 @@ bool process_mod1_keys(uint16_t keycode, keyrecord_t *record) {
 bool process_mod2_keys(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         PROC_MOD2(KC_E, KC_END);  // MOD2+E  ->  END
-        PROC_MOD2(KC_A, KC_HOME); // MOD2+E  ->  HOME
+        PROC_MOD2(KC_A, KC_HOME); // MOD2+A  ->  HOME
         PROC_MOD2_2(KC_U, LSFT(KC_HOME), LCTL(KC_X)); // MOD2+U  ->  SFT+HOME, CTL+X
+        case KC_F: // MOD2+F  ->  RIGHT (repeatable)
+            if (record->event.pressed) {
+                if (mod1_oneshot) {
+                    mod1_oneshot = false;
+                    mod1_enabled = true;
+                }
+                if (mod2_oneshot | mod2_enabled) {
+                    mod2_oneshot = false;
+                    mod2_enabled = true;
+                    mod2_f_repeat = true;
+                    return false;
+                }
+            } else {
+                if (mod2_f_repeat) {
+                    mod2_f_repeat = false;
+                    mod2_f_delay = 0;
+                    return false;
+                }
+            }
+            break;
+        case KC_B: // MOD2+B  ->  LEFT (repeatable)
+            if (record->event.pressed) {
+                if (mod1_oneshot) {
+                    mod1_oneshot = false;
+                    mod1_enabled = true;
+                }
+                if (mod2_oneshot | mod2_enabled) {
+                    mod2_oneshot = false;
+                    mod2_enabled = true;
+                    mod2_b_repeat = true;
+                    return false;
+                }
+            } else {
+                if (mod2_b_repeat) {
+                    mod2_b_repeat = false;
+                    mod2_b_delay = 0;
+                    return false;
+                }
+            }
+            break;
     }
     return true;
 }
@@ -567,8 +607,8 @@ bool process_mod1_sft_keys(uint16_t keycode, keyrecord_t *record) {
 
 bool process_mod2_sft_keys(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        PROC_MOD2_SFT(KC_E, LSFT(KC_END));  // MOD2+E  ->  END
-        PROC_MOD2_SFT(KC_A, LSFT(KC_HOME)); // MOD2+E  ->  HOME
+        PROC_MOD2_SFT(KC_E, LSFT(KC_END));  // MOD2+SFT+E  ->  SFT+END
+        PROC_MOD2_SFT(KC_A, LSFT(KC_HOME)); // MOD2+SFT+A  ->  SFT+HOME
     }
     return true;
 }
@@ -596,46 +636,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return result;
     }
     switch (keycode) {
-        case KC_F:
-            if (record->event.pressed) {
-                if (mod1_oneshot) {
-                    mod1_oneshot = false;
-                    mod1_enabled = true;
-                }
-                if (mod2_oneshot | mod2_enabled) {
-                    mod2_oneshot = false;
-                    mod2_enabled = true;
-                    mod2_f_repeat = true;
-                    return false;
-                }
-            } else {
-                if (mod2_f_repeat) {
-                    mod2_f_repeat = false;
-                    mod2_f_delay = 0;
-                    return false;
-                }
-            }
-            break;
-        case KC_B:
-            if (record->event.pressed) {
-                if (mod1_oneshot) {
-                    mod1_oneshot = false;
-                    mod1_enabled = true;
-                }
-                if (mod2_oneshot | mod2_enabled) {
-                    mod2_oneshot = false;
-                    mod2_enabled = true;
-                    mod2_b_repeat = true;
-                    return false;
-                }
-            } else {
-                if (mod2_b_repeat) {
-                    mod2_b_repeat = false;
-                    mod2_b_delay = 0;
-                    return false;
-                }
-            }
-            break;
         case CK_MOD1:
             if (record->event.pressed) {
                 mod1_oneshot = true;
