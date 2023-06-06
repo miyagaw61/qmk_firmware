@@ -345,7 +345,7 @@ case keycode1: \
         send(keycode2); \
         if (keycode3 & QK_DELAY) { \
             delay_keycode = (keycode3 & ~QK_DELAY); \
-            defer_exec(200, send_delay, NULL); \
+            defer_exec(300, send_delay, NULL); \
             return false; \
         } \
         send(keycode3); \
@@ -397,7 +397,7 @@ case keycode1: \
         send(keycode2); \
         if (keycode3 & QK_DELAY) { \
             delay_keycode = (keycode3 & ~QK_DELAY); \
-            defer_exec(150, send_delay, NULL); \
+            defer_exec(300, send_delay, NULL); \
             return false; \
         } \
         send(keycode3); \
@@ -475,7 +475,7 @@ case keycode1: \
         send(keycode2); \
         if (keycode3 & QK_DELAY) { \
             delay_keycode = (keycode3 & ~QK_DELAY); \
-            defer_exec(150, send_delay, NULL); \
+            defer_exec(300, send_delay, NULL); \
             return false; \
         } \
         send(keycode3); \
@@ -505,7 +505,7 @@ case keycode1: \
         send(keycode2); \
         if (keycode3 & QK_DELAY) { \
             delay_keycode = (keycode3 & ~QK_DELAY); \
-            defer_exec(150, send_delay, NULL); \
+            defer_exec(300, send_delay, NULL); \
             return false; \
         } \
         send(keycode3); \
@@ -542,7 +542,7 @@ bool process_mod1_keys(uint16_t keycode, keyrecord_t *record) {
         PROC_MOD1_2(KC_A,    KC_A, KC_INT4);   // MOD1+A  ->  A, MOD2-ONESHOT
         PROC_MOD1_2(KC_J,    KC_INT5, KC_ESC); // MOD1+J  ->  MOD1-ONESHOT, ESC
         PROC_MOD1_2(KC_DOWN, LCTL(LALT(KC_PAUS)), DELAY(LALT(KC_TAB))); // MOD1+DOWN  ->  CTL+ALT+PAUSE, ALT+TAB
-        PROC_MOD1_2(KC_UP,   LWIN(KC_3),         LWIN(KC_UP));          // MOD1+UP    ->  WIN+3, WIN+UP
+        PROC_MOD1_2(KC_UP,   LWIN(KC_3),          DELAY(LWIN(KC_UP)));  // MOD1+UP    ->  WIN+3, WIN+UP
     }
     return true;
 }
