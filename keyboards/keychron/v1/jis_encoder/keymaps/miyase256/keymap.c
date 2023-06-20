@@ -537,10 +537,10 @@ bool process_mod1_keys(uint16_t keycode, keyrecord_t *record) {
         PROC_MOD1(LSFT(KC_7), LSFT(KC_LBRC));  // MOD1+'  ->  `
         PROC_MOD1(KC_SLSH,    LSFT(KC_EQL));   // MOD1+/  ->  ~
         PROC_MOD1(KC_D,       LCTL(KC_F1));    // MOD1+D  ->  CTL+F1
-        PROC_MOD1_2(KC_I,    KC_I, KC_INT4);   // MOD1+I  ->  I, MOD2-ONESHOT
-        PROC_MOD1_2(KC_O,    KC_O, KC_INT4);   // MOD1+O  ->  O, MOD2-ONESHOT
-        PROC_MOD1_2(KC_A,    KC_A, KC_INT4);   // MOD1+A  ->  A, MOD2-ONESHOT
-        PROC_MOD1_2(KC_J,    KC_INT5, KC_ESC); // MOD1+J  ->  MOD1-ONESHOT, ESC
+        PROC_MOD1_2(KC_I,    KC_I, KC_INT5);   // MOD1+I  ->  I, MOD1-ONESHOT
+        PROC_MOD1_2(KC_O,    KC_O, KC_INT5);   // MOD1+O  ->  O, MOD1-ONESHOT
+        PROC_MOD1_2(KC_A,    KC_A, KC_INT5);   // MOD1+A  ->  A, MOD1-ONESHOT
+        PROC_MOD1_2(KC_J,    KC_INT4, KC_ESC); // MOD1+J  ->  MOD2-ONESHOT, ESC
         PROC_MOD1_2(KC_DOWN, LCTL(LALT(KC_PAUS)), DELAY(LALT(KC_TAB))); // MOD1+DOWN  ->  CTL+ALT+PAUSE, ALT+TAB
         PROC_MOD1_2(KC_UP,   LWIN(KC_3),          DELAY(LWIN(KC_UP)));  // MOD1+UP    ->  WIN+3, WIN+UP
     }
@@ -598,9 +598,9 @@ bool process_mod2_keys(uint16_t keycode, keyrecord_t *record) {
 
 bool process_mod1_sft_keys(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        PROC_MOD1_SFT_2(KC_I, LSFT(KC_I), KC_INT4); // MOD1+SFT+I  ->  SFT+I, MOD2-ONESHOT
-        PROC_MOD1_SFT_2(KC_O, LSFT(KC_O), KC_INT4); // MOD1+SFT+O  ->  SFT+O, MOD2-ONESHOT
-        PROC_MOD1_SFT_2(KC_A, LSFT(KC_A), KC_INT4); // MOD1+SFT+A  ->  SFT+A, MOD2-ONESHOT
+        PROC_MOD1_SFT_2(KC_I, LSFT(KC_I), KC_INT5); // MOD1+SFT+I  ->  SFT+I, MOD1-ONESHOT
+        PROC_MOD1_SFT_2(KC_O, LSFT(KC_O), KC_INT5); // MOD1+SFT+O  ->  SFT+O, MOD1-ONESHOT
+        PROC_MOD1_SFT_2(KC_A, LSFT(KC_A), KC_INT5); // MOD1+SFT+A  ->  SFT+A, MOD1-ONESHOT
     }
     return true;
 }
