@@ -301,6 +301,28 @@ case keycode1: \
     } \
     break;
 
+#define PROC_MOD1_TEMPLATE(keycode1) \
+case keycode1: \
+    if (!record->event.pressed) { \
+        break; \
+    } \
+    if (is_sft()) { \
+        break; \
+    } \
+    if (is_ctl()) { \
+        break; \
+    } \
+    if (is_win()) { \
+        break; \
+    } \
+    if (mod2_oneshot) { \
+        mod2_oneshot = false; \
+        mod2_enabled = true; \
+    } \
+    if (mod1_oneshot | mod1_enabled) { \
+        mod1_oneshot = false; \
+        mod1_enabled = true;
+
 #define PROC_MOD1(keycode1, keycode2) \
 case keycode1: \
     if (!record->event.pressed) { \
@@ -543,6 +565,24 @@ bool process_mod1_keys(uint16_t keycode, keyrecord_t *record) {
         PROC_MOD1_2(KC_J,    KC_INT4, KC_ESC); // MOD1+J  ->  MOD2-ONESHOT, ESC
         PROC_MOD1_2(KC_DOWN, LCTL(LALT(KC_PAUS)), DELAY(LALT(KC_TAB))); // MOD1+DOWN  ->  CTL+ALT+PAUSE, ALT+TAB
         PROC_MOD1_2(KC_UP,   LWIN(KC_3),          DELAY(LWIN(KC_UP)));  // MOD1+UP    ->  WIN+3, WIN+UP
+        PROC_MOD1_TEMPLATE(KC_M) // MOD1+M  ->  ESC, SPC, W, CTL+S, H, CTL+C, CTL+C, M, A, K, E, ENTER, CTL+S, L
+            send(KC_ESC);
+            send(KC_SPC);
+            send(KC_W);
+            send(LCTL(KC_S));
+            send(KC_H);
+            send(LCTL(KC_C));
+            send(LCTL(KC_C));
+            send(KC_M);
+            send(KC_A);
+            send(KC_K);
+            send(KC_E);
+            send(KC_ENT);
+            send(LCTL(KC_S));
+            send(KC_L);
+            return false;
+        }
+        break;
     }
     return true;
 }
