@@ -77,7 +77,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
     [MAC_BASE] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU)},
     [MAC_FN]   = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
-    [WIN_BASE] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU)},
+    [WIN_BASE] = { ENCODER_CCW_CW(LSFT(LALT(KC_F5)), LALT(KC_F5))},
     [WIN_FN]   = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
 };
 #endif // ENCODER_MAP_ENABLE
