@@ -560,6 +560,7 @@ bool process_mod1_keys(uint16_t keycode, keyrecord_t *record) {
         PROC_MOD1(KC_SLSH,    LSFT(KC_EQL));   // MOD1+/  ->  ~
         PROC_MOD1(KC_D,       LCTL(KC_F1));    // MOD1+D  ->  CTL+F1
         PROC_MOD1(KC_X,       LSFT(LCTL(KC_K)));    // MOD1+X  ->  SFT+CTL+K
+        PROC_MOD1(KC_SPC,     LSFT(LCTL(KC_SPC)));  // MOD1+SPC  ->  SFT+CTL+SPC
         PROC_MOD1_2(KC_I,    KC_I, KC_INT5);   // MOD1+I  ->  I, MOD1-ONESHOT
         PROC_MOD1_2(KC_O,    KC_O, KC_INT5);   // MOD1+O  ->  O, MOD1-ONESHOT
         PROC_MOD1_2(KC_A,    KC_A, KC_INT5);   // MOD1+A  ->  A, MOD1-ONESHOT
